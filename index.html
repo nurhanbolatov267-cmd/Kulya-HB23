@@ -1,112 +1,165 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP Приглашение</title>
-    <style>
-        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; color: white; text-align: center; overflow: hidden; background: #1a1a1a; }
-        body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('photo.jpg') center/cover no-repeat; filter: blur(20px) brightness(0.5); z-index: -1; }
-        .card { background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 30px 20px; border-radius: 25px; max-width: 350px; width: 85%; box-shadow: 0 15px 50px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); position: relative; z-index: 2; }
-        h1 { font-size: 24px; margin: 0 0 10px 0; }
-        #guest { font-size: 18px; margin-bottom: 20px; color: #ffd700; font-weight: bold; }
-        .main-text, .extra-text { font-size: 14px; line-height: 1.5; color: #fff; }
-        .main-text { margin-bottom: 5px; }
-        .highlight { font-weight: bold; display: block; margin: 12px 0; font-size: 16px; }
-        .extra-text { margin-bottom: 20px; display: block; }
-        .invite-photo { width: 100%; max-width: 250px; border-radius: 15px; margin: 0 auto 20px; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.4); filter: blur(15px); transition: filter 1.5s ease; }
-        .bottom-info { background: rgba(0, 0, 0, 0.4); padding: 15px; border-radius: 15px; font-size: 13px; line-height: 1.7; text-align: left; }
-        .bottom-info a { color: #00ff88; text-decoration: underline; font-weight: bold; }
-        .btn-container { height: 60px; margin-top: 25px; display: flex; justify-content: center; align-items: center; gap: 15px; position: relative; }
-        button { font-size: 16px; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; }
-        #yes { background: #00c853; color: white; position: relative; z-index: 10; }
-        #no { background: #ff1744; color: white; position: relative; z-index: 5; transition: all 0.3s ease-out; }
-        #message { display: none; margin-top: 20px; font-size: 18px; font-weight: bold; color: #00ff88; }
-        .confetti { position: fixed; width: 10px; height: 10px; top: -10px; animation: fall linear infinite; z-index: 1000; }
-        @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIP Приглашение</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family: Arial;
+    background: black;
+    overflow:hidden;
+    color:white;
+    text-align:center;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:url("photo.jpg") center/cover no-repeat;
+    filter:blur(18px) brightness(0.4);
+    z-index:-1;
+}
+
+.card{
+    background:rgba(255,255,255,0.12);
+    padding:25px;
+    border-radius:20px;
+    width:85%;
+    max-width:350px;
+    backdrop-filter: blur(15px);
+}
+
+button{
+    padding:12px 20px;
+    border:none;
+    border-radius:10px;
+    margin:5px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+#yes{background:#00c853;color:white;}
+#no{background:#ff1744;color:white;position:fixed;}
+
+#msg{
+    display:none;
+    margin-top:15px;
+    color:#00ff99;
+    font-weight:bold;
+}
+
+/* 💥 ВЗРЫВ */
+.flash {
+    position:fixed;
+    inset:0;
+    background:white;
+    opacity:0;
+    pointer-events:none;
+    z-index:9999;
+    transition: opacity 0.15s;
+}
+
+.shake {
+    animation: shake 0.4s;
+}
+
+@keyframes shake {
+    0%{transform:translate(0,0)}
+    25%{transform:translate(10px,-10px)}
+    50%{transform:translate(-10px,10px)}
+    75%{transform:translate(10px,10px)}
+    100%{transform:translate(0,0)}
+}
+</style>
 </head>
+
 <body>
 
+<div class="flash" id="flash"></div>
+
 <div class="card">
-    <h1>🎂 VIP Приглашение</h1>
-    <p id="guest">Загрузка...</p>
-    <div class="main-text">
-        Дорогой друг! 📩<br>
-        <span class="highlight">Приглашаю тебя на день рождения моей любимой Кули 🎂✨</span>
-        Это особенное приглашение на особенный праздник.
-    </div>
-    <span class="extra-text">Приглашаем тебя на незабываемый вечер ✨</span>
-    <img src="photo.jpg" class="invite-photo" id="mainPhoto">
-    <div class="bottom-info">
-        👗 Дресс-код: розово-белые тона<br>
-        📍 <a href="https://2gis.kz/aktobe/geo/70030076394441340" target="_blank">Адрес: СК Строитель 4, 54А</a><br>
-        📅 30 апреля | ⏰ 17:00
-    </div>
-    <div class="btn-container">
-        <button id="yes">Я приду 😍</button>
-        <button id="no">Не приду 😢</button>
-    </div>
-    <div id="message">🔥 ТЫ В СПИСКЕ ГОСТЕЙ 🔥</div>
+    <h1>🎂 VIP INVITE</h1>
+    <p id="guest">Привет!</p>
+
+    <button id="yes">Я приду 🔥</button>
+    <button id="no">Не приду 😢</button>
+
+    <div id="msg">🔥 ТЫ В СПИСКЕ ГОСТЕЙ 🔥</div>
 </div>
 
-<audio id="bgMusic" loop preload="auto" playsinline>
-    <source src="music.mp3" type="audio/mpeg">
+<!-- 🎵 музыка -->
+<audio id="music" preload="auto" loop>
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3b3c8e2b6f.mp3?filename=party-112194.mp3">
 </audio>
 
 <script>
-    const params = new URLSearchParams(window.location.search);
-    document.getElementById('guest').textContent = `Привет, ${params.get('name') || 'Друг'}!`;
+const yes = document.getElementById("yes");
+const no = document.getElementById("no");
+const msg = document.getElementById("msg");
+const music = document.getElementById("music");
+const flash = document.getElementById("flash");
 
-    const yesBtn = document.getElementById('yes');
-    const noBtn = document.getElementById('no');
-    const bgMusic = document.getElementById('bgMusic');
-    const mainPhoto = document.getElementById('mainPhoto');
+/* 🔊 ВАЖНО: звук запускаем ТОЛЬКО по клику */
+document.body.addEventListener("click", () => {
+    music.play().catch(()=>{});
+}, { once:true });
 
-    // Функция разблокировки звука для мобилок
-    const unlock = () => {
-        bgMusic.play().then(() => { bgMusic.pause(); }).catch(() => {});
-        window.removeEventListener('click', unlock);
-        window.removeEventListener('touchstart', unlock);
-    };
-    window.addEventListener('click', unlock);
-    window.addEventListener('touchstart', unlock);
+/* 😈 убегающая кнопка */
+no.addEventListener("mouseover", () => {
+    no.style.left = Math.random()*(window.innerWidth-100)+"px";
+    no.style.top = Math.random()*(window.innerHeight-50)+"px";
+});
 
-    function moveBtn() {
-        noBtn.style.position = 'fixed';
-        const maxX = window.innerWidth - noBtn.offsetWidth - 20;
-        const maxY = window.innerHeight - noBtn.offsetHeight - 20;
-        noBtn.style.left = Math.max(20, Math.floor(Math.random() * maxX)) + 'px';
-        noBtn.style.top = Math.max(20, Math.floor(Math.random() * maxY)) + 'px';
+/* 💥 YES ЭФФЕКТ */
+yes.onclick = () => {
+
+    // музыка (ещё раз гарантируем)
+    music.play().catch(()=>{});
+
+    // flash 💥
+    flash.style.opacity = 1;
+
+    // shake эффект
+    document.body.classList.add("shake");
+
+    setTimeout(() => {
+        flash.style.opacity = 0;
+        document.body.classList.remove("shake");
+    }, 200);
+
+    msg.style.display = "block";
+    no.style.display = "none";
+
+    // конфетти
+    for(let i=0;i<60;i++){
+        const c = document.createElement("div");
+        c.style.position="fixed";
+        c.style.width="8px";
+        c.style.height="8px";
+        c.style.top="-10px";
+        c.style.left=Math.random()*100+"vw";
+        c.style.background=`hsl(${Math.random()*360},100%,50%)`;
+        c.style.animation="fall 3s linear forwards";
+        document.body.appendChild(c);
     }
-    noBtn.addEventListener('mouseover', moveBtn);
+};
 
-    yesBtn.addEventListener('click', () => {
-        // Пробуем запустить ТВОЙ music.mp3
-        bgMusic.currentTime = 0;
-        const playPromise = bgMusic.play();
-
-        if (playPromise !== undefined) {
-            playPromise.catch(error => {
-                console.log("Локальный файл не найден, включаю резерв...");
-                bgMusic.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3";
-                bgMusic.play();
-            });
-        }
-
-        mainPhoto.style.filter = "blur(0px)"; 
-        document.getElementById('message').style.display = 'block';
-        noBtn.style.display = 'none';
-
-        for (let i = 0; i < 60; i++) {
-            const c = document.createElement('div');
-            c.className = 'confetti';
-            c.style.left = Math.random() * 100 + 'vw';
-            c.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
-            c.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            document.body.appendChild(c);
-        }
-    });
+/* конфетти animation */
+const style = document.createElement("style");
+style.innerHTML = `
+@keyframes fall {
+    to { transform: translateY(110vh) rotate(720deg); }
+}`;
+document.head.appendChild(style);
 </script>
+
 </body>
 </html>
