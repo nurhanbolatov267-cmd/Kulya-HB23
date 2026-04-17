@@ -28,13 +28,13 @@
         .invite-photo { width: 100%; max-width: 260px; border-radius: 15px; margin: 0 auto 15px; display: block; box-shadow: 0 10px 25px rgba(0,0,0,0.4); border: 2px solid rgba(255,255,255,0.3); }
 
         .bottom-info { background: rgba(255,255,255,0.12); padding: 12px; border-radius: 12px; font-size: 13px; line-height: 1.8; }
-        .bottom-info a { color: white; text-decoration: underline; }
+        .bottom-info a { color: white; text-decoration: underline; font-weight: bold; }
 
         .btn-container { height: 60px; position: relative; margin-top: 20px; display: flex; justify-content: center; gap: 10px; }
         button { font-size: 15px; padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         
-        #yes { background: #00c853; color: white; min-width: 100px; }
-        #no { background: #ff1744; color: white; min-width: 100px; }
+        #yes { background: #00c853; color: white; min-width: 100px; z-index: 10; }
+        #no { background: #ff1744; color: white; min-width: 100px; z-index: 10; }
 
         #message { display: none; margin-top: 15px; font-size: 16px; font-weight: bold; color: #00ff88; text-shadow: 0 0 10px rgba(0,255,136,0.3); }
         .confetti { position: fixed; width: 8px; height: 8px; top: -10px; animation: fall linear infinite; z-index: 100; }
@@ -45,7 +45,7 @@
 
 <div class="card">
     <h1>🎂 VIP Приглашение</h1>
-    <p id="guest">Привет, Друг!</p>
+    <p id="guest">Загрузка...</p>
 
     <div class="main-text">
         Дорогой друг/подруга! 📩<br>
@@ -71,11 +71,11 @@
 </div>
 
 <audio id="bgMusic" loop preload="auto">
-    <source src="https://files.freemusicarchive.org/storage-tokyo/music/no_curator/Flo_Rida/Right_Round/Flo_Rida_-_Right_Round.mp3" type="audio/mpeg">
     <source src="https://www.mboxdrive.com/Flo%20Rida%20-%20Right%20Round.mp3" type="audio/mpeg">
 </audio>
 
 <script>
+    // 1. Имя гостя из URL
     const params = new URLSearchParams(window.location.search);
     const guestName = params.get('name') || 'Друг';
     document.getElementById('guest').textContent = `Привет, ${guestName}!`;
@@ -84,10 +84,16 @@
     const noBtn = document.getElementById('no');
     const bgMusic = document.getElementById('bgMusic');
 
-    function startMusic() { bgMusic.play().catch(() => {}); }
+    // 2. Функция разблокировки звука
+    function startMusic() {
+        bgMusic.play().catch(e => console.log("Браузер ждет клика"));
+    }
+
+    // Слушаем клики по всему экрану
     document.addEventListener('click', startMusic, { once: true });
     document.addEventListener('touchstart', startMusic, { once: true });
 
+    // 3. Убегающая кнопка
     noBtn.addEventListener('mouseover', moveBtn);
     noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveBtn(); });
 
@@ -97,10 +103,16 @@
         noBtn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
     }
 
+    // 4. Кнопка "ДА"
     yesBtn.addEventListener('click', () => {
+        bgMusic.volume = 1.0;
         bgMusic.play();
         document.getElementById('message').style.display = 'block';
         noBtn.style.display = 'none';
+        createConfetti();
+    });
+
+    function createConfetti() {
         for (let i = 0; i < 50; i++) {
             const c = document.createElement('div');
             c.className = 'confetti';
@@ -109,7 +121,7 @@
             c.style.animationDuration = (Math.random() * 2 + 3) + 's';
             document.body.appendChild(c);
         }
-    });
+    }
 </script>
 
 </body>
