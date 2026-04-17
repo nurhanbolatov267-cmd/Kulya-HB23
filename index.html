@@ -34,12 +34,12 @@
         .bottom-info a { color: #00ff88; text-decoration: underline; font-weight: bold; }
 
         .btn-container { height: 60px; margin-top: 25px; display: flex; justify-content: center; align-items: center; gap: 15px; position: relative; }
-        button { font-size: 16px; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; }
+        button { font-size: 16px; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         
         #yes { background: #00c853; color: white; position: relative; z-index: 10; }
         #no { background: #ff1744; color: white; position: relative; z-index: 5; transition: 0.1s; }
 
-        #message { display: none; margin-top: 20px; font-size: 18px; font-weight: bold; color: #00ff88; }
+        #message { display: none; margin-top: 20px; font-size: 18px; font-weight: bold; color: #00ff88; text-shadow: 0 0 10px rgba(0,255,136,0.5); }
         .confetti { position: fixed; width: 10px; height: 10px; top: -10px; animation: fall linear infinite; z-index: 1000; }
         @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
     </style>
@@ -72,8 +72,8 @@
     <div id="message">🔥 ТЫ В СПИСКЕ ГОСТЕЙ 🔥</div>
 </div>
 
-<audio id="bgMusic" loop preload="auto">
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+<audio id="bgMusic" loop preload="auto" playsinline>
+    <source src="https://cdn.pixabay.com/audio/2023/05/31/audio_4da586383a.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -84,22 +84,22 @@
     const noBtn = document.getElementById('no');
     const bgMusic = document.getElementById('bgMusic');
 
-    // Предварительная "разблокировка" аудио
+    // Функция разблокировки звука (сработает при любом клике по экрану)
     const unlock = () => {
         bgMusic.play().then(() => {
             bgMusic.pause();
-        }).catch(e => console.log("Audio unlock waiting..."));
+        }).catch(e => console.log("Unlock waiting for interaction"));
         window.removeEventListener('click', unlock);
         window.removeEventListener('touchstart', unlock);
     };
     window.addEventListener('click', unlock);
     window.addEventListener('touchstart', unlock);
 
-    // Убегающая кнопка (теперь без наложений)
+    // Убегающая кнопка
     function moveBtn() {
         noBtn.style.position = 'fixed';
-        const x = Math.random() * (window.innerWidth - 120);
-        const y = Math.random() * (window.innerHeight - 50);
+        const x = Math.random() * (window.innerWidth - 150);
+        const y = Math.random() * (window.innerHeight - 100);
         noBtn.style.left = x + 'px';
         noBtn.style.top = y + 'px';
     }
@@ -108,11 +108,13 @@
 
     // Кнопка ДА
     yesBtn.addEventListener('click', () => {
-        bgMusic.play().catch(err => console.error("Ошибка воспроизведения:", err));
+        bgMusic.currentTime = 0;
+        bgMusic.volume = 1.0;
+        bgMusic.play();
         document.getElementById('message').style.display = 'block';
         noBtn.style.display = 'none';
         
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 60; i++) {
             const c = document.createElement('div');
             c.className = 'confetti';
             c.style.left = Math.random() * 100 + 'vw';
@@ -122,5 +124,6 @@
         }
     });
 </script>
+
 </body>
 </html>
