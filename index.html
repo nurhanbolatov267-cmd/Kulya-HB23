@@ -34,10 +34,19 @@
         .bottom-info a { color: #00ff88; text-decoration: underline; font-weight: bold; }
 
         .btn-container { height: 60px; margin-top: 25px; display: flex; justify-content: center; align-items: center; gap: 15px; position: relative; }
+        
         button { font-size: 16px; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         
         #yes { background: #00c853; color: white; position: relative; z-index: 10; }
-        #no { background: #ff1744; color: white; position: relative; z-index: 5; transition: 0.1s; }
+        
+        /* Кнопка "Нет" теперь плавная */
+        #no { 
+            background: #ff1744; 
+            color: white; 
+            position: relative; 
+            z-index: 5; 
+            transition: all 0.3s ease-out; /* Плавное движение */
+        }
 
         #message { display: none; margin-top: 20px; font-size: 18px; font-weight: bold; color: #00ff88; text-shadow: 0 0 10px rgba(0,255,136,0.5); }
         .confetti { position: fixed; width: 10px; height: 10px; top: -10px; animation: fall linear infinite; z-index: 1000; }
@@ -84,40 +93,44 @@
     const noBtn = document.getElementById('no');
     const bgMusic = document.getElementById('bgMusic');
 
-    // Пытаемся подготовить аудио заранее
+    // Подготовка аудио
     const prepareAudio = () => {
-        bgMusic.play().then(() => {
-            bgMusic.pause();
-        }).catch(() => {});
+        bgMusic.play().then(() => { bgMusic.pause(); }).catch(() => {});
         window.removeEventListener('touchstart', prepareAudio);
         window.removeEventListener('click', prepareAudio);
     };
     window.addEventListener('touchstart', prepareAudio);
     window.addEventListener('click', prepareAudio);
 
+    // Умное перемещение кнопки
     function moveBtn() {
         noBtn.style.position = 'fixed';
-        const x = Math.random() * (window.innerWidth - 150);
-        const y = Math.random() * (window.innerHeight - 100);
-        noBtn.style.left = x + 'px';
-        noBtn.style.top = y + 'px';
+        
+        // Берем размеры экрана и кнопки
+        const btnWidth = noBtn.offsetWidth;
+        const btnHeight = noBtn.offsetHeight;
+        
+        // Ограничиваем область, чтобы кнопка не уходила за края (оставляем отступы по 20px)
+        const maxX = window.innerWidth - btnWidth - 20;
+        const maxY = window.innerHeight - btnHeight - 20;
+        
+        const randomX = Math.max(20, Math.floor(Math.random() * maxX));
+        const randomY = Math.max(20, Math.floor(Math.random() * maxY));
+        
+        noBtn.style.left = randomX + 'px';
+        noBtn.style.top = randomY + 'px';
     }
+
     noBtn.addEventListener('mouseover', moveBtn);
-    noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveBtn(); });
+    noBtn.addEventListener('touchstart', (e) => { 
+        e.preventDefault(); // Запрещаем нажатие на мобилках
+        moveBtn(); 
+    });
 
     yesBtn.addEventListener('click', () => {
-        // Принудительный сброс и старт
         bgMusic.currentTime = 0;
         bgMusic.volume = 1.0;
-        const playPromise = bgMusic.play();
-        
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                console.log("Успех!");
-            }).catch(error => {
-                alert("Пожалуйста, включите звук на телефоне!");
-            });
-        }
+        bgMusic.play();
 
         document.getElementById('message').style.display = 'block';
         noBtn.style.display = 'none';
