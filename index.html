@@ -35,10 +35,9 @@
         button { font-size: 16px; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         
         #yes { background: #00c853; color: white; }
-        #no { background: #ff1744; color: white; transition: 0.1s; }
+        #no { background: #ff1744; color: white; }
 
-        #message { display: none; margin-top: 20px; font-size: 18px; font-weight: bold; color: #00ff88; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
+        #message { display: none; margin-top: 20px; font-size: 18px; font-weight: bold; color: #00ff88; }
         
         .confetti { position: fixed; width: 10px; height: 10px; top: -10px; animation: fall linear infinite; z-index: 1000; }
         @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
@@ -48,7 +47,7 @@
 
 <div class="card">
     <h1>🎂 VIP Приглашение</h1>
-    <p id="guest">Загрузка...</p>
+    <p id="guest">Привет!</p>
 
     <div class="main-text">
         Дорогой друг/подруга! 📩<br>
@@ -74,7 +73,7 @@
 </div>
 
 <audio id="bgMusic" loop preload="auto">
-    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_27339733d2.mp3" type="audio/mpeg">
+    <source src="music.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -85,20 +84,13 @@
     const noBtn = document.getElementById('no');
     const bgMusic = document.getElementById('bgMusic');
 
-    // Функция принудительного запуска
-    function forcePlay() {
-        bgMusic.play().then(() => {
-            console.log("Музыка играет!");
-        }).catch(err => {
-            console.log("Ждем нажатия на кнопку...");
-        });
+    function startMusic() {
+        bgMusic.play().catch(() => {});
     }
 
-    // Пробуем запустить при любом касании
-    document.addEventListener('touchstart', forcePlay, { once: true });
-    document.addEventListener('click', forcePlay, { once: true });
+    document.addEventListener('touchstart', startMusic, { once: true });
+    document.addEventListener('click', startMusic, { once: true });
 
-    // Кнопка НЕТ убегает
     noBtn.addEventListener('mouseover', moveBtn);
     noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveBtn(); });
 
@@ -108,9 +100,7 @@
         noBtn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
     }
 
-    // Кнопка ДА активирует всё
     yesBtn.addEventListener('click', () => {
-        bgMusic.volume = 1.0;
         bgMusic.play();
         document.getElementById('message').style.display = 'block';
         noBtn.style.display = 'none';
@@ -121,11 +111,9 @@
             c.style.left = Math.random() * 100 + 'vw';
             c.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
             c.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            c.style.opacity = Math.random();
             document.body.appendChild(c);
         }
     });
 </script>
-
 </body>
 </html>
