@@ -27,11 +27,20 @@
         
         .main-text { font-size: 14px; line-height: 1.5; margin-bottom: 5px; color: #fff; }
         .highlight { font-weight: bold; display: block; margin: 12px 0; font-size: 16px; color: #fff; }
-        
-        /* Теперь этот текст такого же размера, как основной (14px) */
         .extra-text { font-size: 14px; line-height: 1.5; color: #fff; margin-bottom: 20px; display: block; }
 
-        .invite-photo { width: 100%; max-width: 250px; border-radius: 15px; margin: 0 auto 20px; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.4); }
+        /* Настройки фото с блюром */
+        .invite-photo { 
+            width: 100%; 
+            max-width: 250px; 
+            border-radius: 15px; 
+            margin: 0 auto 20px; 
+            display: block; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            border: 2px solid rgba(255,255,255,0.4); 
+            filter: blur(15px); /* Изначальный блюр */
+            transition: filter 1.5s ease; /* Плавное исчезновение блюра */
+        }
 
         .bottom-info { background: rgba(0, 0, 0, 0.4); padding: 15px; border-radius: 15px; font-size: 13px; line-height: 1.7; text-align: left; }
         .bottom-info a { color: #00ff88; text-decoration: underline; font-weight: bold; }
@@ -67,7 +76,7 @@
     
     <span class="extra-text">Приглашаем тебя на незабываемый вечер ✨</span>
 
-    <img src="photo.jpg" class="invite-photo">
+    <img src="photo.jpg" class="invite-photo" id="mainPhoto">
 
     <div class="bottom-info">
         👗 Дресс-код: розово-белые тона<br>
@@ -94,6 +103,7 @@
     const yesBtn = document.getElementById('yes');
     const noBtn = document.getElementById('no');
     const bgMusic = document.getElementById('bgMusic');
+    const mainPhoto = document.getElementById('mainPhoto');
 
     const unlock = () => {
         bgMusic.play().then(() => { bgMusic.pause(); }).catch(() => {});
@@ -117,6 +127,10 @@
     yesBtn.addEventListener('click', () => {
         bgMusic.currentTime = 0;
         bgMusic.play();
+        
+        // Убираем блюр у фото
+        mainPhoto.style.filter = "blur(0px)";
+        
         document.getElementById('message').style.display = 'block';
         noBtn.style.display = 'none';
         for (let i = 0; i < 60; i++) {
