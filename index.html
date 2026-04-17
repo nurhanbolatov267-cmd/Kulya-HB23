@@ -7,14 +7,36 @@
     <style>
         body { margin: 0; font-family: Arial, sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; color: white; text-align: center; overflow: hidden; background: #222; }
         body::before { content: ""; position: fixed; width: 100%; height: 100%; background: url('photo.jpg') center/cover no-repeat; filter: blur(25px) brightness(0.6); z-index: -1; }
-        .card { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 20px; border-radius: 20px; max-width: 360px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.5); position: relative; }
-        .highlight { font-weight: bold; text-shadow: 0 0 12px rgba(255,255,255,0.9); }
-        .invite-photo { width: 100%; max-width: 280px; border-radius: 20px; margin: 15px auto; display: block; box-shadow: 0 15px 35px rgba(0,0,0,0.5); border: 3px solid rgba(255,255,255,0.5); }
-        .bottom-info { margin-top: 10px; font-size: 14px; background: rgba(255,255,255,0.15); padding: 10px; border-radius: 12px; }
-        button { font-size: 16px; padding: 12px 20px; margin: 10px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        #yes { background: #00c853; color: white; }
-        #no { background: #ff1744; color: white; position: absolute; }
-        #message { display: none; margin-top: 15px; font-size: 18px; font-weight: bold; color: #00ff88; }
+        
+        .card { 
+            background: rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px); 
+            padding: 25px 20px; 
+            border-radius: 20px; 
+            max-width: 360px; 
+            width: 85%; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); 
+        }
+
+        h1 { font-size: 22px; margin-bottom: 5px; }
+        #guest { font-size: 14px; margin-bottom: 15px; opacity: 0.9; }
+        
+        .main-text { font-size: 14px; line-height: 1.6; margin-bottom: 15px; }
+        .highlight { font-weight: bold; display: block; margin: 10px 0; }
+
+        .invite-photo { width: 100%; max-width: 260px; border-radius: 15px; margin: 0 auto 15px; display: block; box-shadow: 0 10px 25px rgba(0,0,0,0.4); border: 2px solid rgba(255,255,255,0.3); }
+
+        .bottom-info { background: rgba(255,255,255,0.12); padding: 12px; border-radius: 12px; font-size: 13px; line-height: 1.8; }
+        .bottom-info a { color: white; text-decoration: underline; }
+
+        .btn-container { height: 60px; position: relative; margin-top: 20px; display: flex; justify-content: center; gap: 10px; }
+        button { font-size: 15px; padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        
+        #yes { background: #00c853; color: white; min-width: 100px; }
+        #no { background: #ff1744; color: white; min-width: 100px; }
+
+        #message { display: none; margin-top: 15px; font-size: 16px; font-weight: bold; color: #00ff88; text-shadow: 0 0 10px rgba(0,255,136,0.3); }
         .confetti { position: fixed; width: 8px; height: 8px; top: -10px; animation: fall linear infinite; z-index: 100; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
@@ -23,57 +45,59 @@
 
 <div class="card">
     <h1>🎂 VIP Приглашение</h1>
-    <p id="guest">Загрузка...</p>
-    <p>Дорогой друг! 💌<br><br><span class="highlight">Приглашаю тебя на день рождения моей любимой Кули 🎂✨</span></p>
-    <img src="photo.jpg" class="invite-photo">
-    <div class="bottom-info">
-        <p>👗 Дресс-код: розово-белый</p>
-        <p>📍 <a href="https://2gis.kz/aktobe/geo/70030076394441340" target="_blank" style="color:white;">СК Строитель 4, 54А</a></p>
-        <p>📅 30 апреля | ⏰ 17:00</p>
+    <p id="guest">Привет, Друг!</p>
+
+    <div class="main-text">
+        Дорогой друг/подруга! 📩<br>
+        <span class="highlight">Приглашаю тебя на день рождения моей любимой Кули 🎂✨</span>
+        Это особенное приглашение на особенный праздник.<br>
+        Приглашаем тебя на незабываемый вечер ✨
     </div>
-    <div style="height: 60px; position: relative; margin-top: 10px;">
+
+    <img src="photo.jpg" class="invite-photo">
+
+    <div class="bottom-info">
+        👗 Дресс-код: нежные розово-белые тона<br>
+        📍 <a href="https://2gis.kz/aktobe/geo/70030076394441340" target="_blank">Адрес: СК Строитель 4, 54А (кирпичный)</a><br>
+        📅 30 апреля | ⏰ 17:00
+    </div>
+
+    <div class="btn-container">
         <button id="yes">Я приду 😍</button>
         <button id="no">Не приду 😢</button>
     </div>
+
     <div id="message">🔥 ТЫ В СПИСКЕ ГОСТЕЙ 🔥</div>
 </div>
 
 <audio id="bgMusic" loop preload="auto">
-  <source src="music.mp3" type="audio/mpeg">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
 </audio>
 
 <script>
     const params = new URLSearchParams(window.location.search);
-    document.getElementById('guest').textContent = `Привет, ${params.get('name') || 'Друг'}!`;
+    const guestName = params.get('name') || 'Друг';
+    document.getElementById('guest').textContent = `Привет, ${guestName}!`;
 
     const yesBtn = document.getElementById('yes');
     const noBtn = document.getElementById('no');
     const bgMusic = document.getElementById('bgMusic');
 
-    // Функция запуска
-    function startMusic() {
-        bgMusic.play();
-    }
-
-    // РАЗБЛОКИРОВКА ЗВУКА (очень важно)
-    window.addEventListener('touchstart', function() {
-        bgMusic.play();
-        bgMusic.pause();
-    }, { once: true });
-
+    function startMusic() { bgMusic.play().catch(() => {}); }
     document.addEventListener('click', startMusic, { once: true });
+    document.addEventListener('touchstart', startMusic, { once: true });
 
     noBtn.addEventListener('mouseover', moveBtn);
     noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveBtn(); });
 
     function moveBtn() {
+        noBtn.style.position = 'fixed';
         noBtn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
         noBtn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
     }
 
     yesBtn.addEventListener('click', () => {
-        bgMusic.volume = 1.0;
-        bgMusic.play(); 
+        bgMusic.play();
         document.getElementById('message').style.display = 'block';
         noBtn.style.display = 'none';
         for (let i = 0; i < 50; i++) {
@@ -86,5 +110,6 @@
         }
     });
 </script>
+
 </body>
 </html>
