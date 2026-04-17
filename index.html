@@ -18,6 +18,8 @@
             width: 85%; 
             box-shadow: 0 15px 50px rgba(0,0,0,0.6); 
             border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+            z-index: 2;
         }
 
         h1 { font-size: 24px; margin: 0 0 5px 0; }
@@ -31,11 +33,11 @@
         .bottom-info { background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 15px; font-size: 13px; line-height: 1.7; text-align: left; }
         .bottom-info a { color: #00ff88; text-decoration: underline; font-weight: bold; }
 
-        .btn-container { height: 50px; position: relative; margin-top: 25px; display: flex; justify-content: center; gap: 15px; }
-        button { font-size: 16px; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; }
+        .btn-container { height: 60px; margin-top: 25px; display: flex; justify-content: center; align-items: center; gap: 15px; position: relative; }
+        button { font-size: 16px; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; transition: transform 0.2s; }
         
         #yes { background: #00c853; color: white; position: relative; z-index: 10; }
-        #no { background: #ff1744; color: white; position: absolute; z-index: 5; transition: 0.1s; }
+        #no { background: #ff1744; color: white; position: relative; z-index: 5; }
 
         #message { display: none; margin-top: 20px; font-size: 18px; font-weight: bold; color: #00ff88; }
         .confetti { position: fixed; width: 10px; height: 10px; top: -10px; animation: fall linear infinite; z-index: 1000; }
@@ -72,7 +74,7 @@
 </div>
 
 <audio id="bgMusic" loop preload="auto">
-    <source src="https://cdn.pixabay.com/audio/2022/10/25/audio_5183492484.mp3" type="audio/mpeg">
+    <source src="https://www.mboxdrive.com/happy-birthday.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -83,36 +85,35 @@
     const noBtn = document.getElementById('no');
     const bgMusic = document.getElementById('bgMusic');
 
-    // Функция гарантированного запуска
-    function playAudio() {
+    // Разблокировка музыки при любом первом касании
+    const unlockAudio = () => {
         bgMusic.play().then(() => {
-            console.log("Музыка пошла!");
-        }).catch(e => {
-            console.log("Нужен клик для запуска");
-        });
-    }
+            bgMusic.pause();
+            bgMusic.currentTime = 0;
+        }).catch(e => console.log("Ждем взаимодействия"));
+        document.removeEventListener('click', unlockAudio);
+        document.removeEventListener('touchstart', unlockAudio);
+    };
+    document.addEventListener('click', unlockAudio);
+    document.addEventListener('touchstart', unlockAudio);
 
-    // Запуск при клике на любую часть сайта (для разблокировки)
-    document.addEventListener('click', playAudio, { once: true });
-    document.addEventListener('touchstart', playAudio, { once: true });
-
-    // Убегающая кнопка
-    noBtn.addEventListener('mouseover', moveBtn);
-    noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveBtn(); });
-
+    // Логика убегающей кнопки (теперь она не заходит за "Я приду")
     function moveBtn() {
-        const x = Math.random() * (window.innerWidth - 100);
-        const y = Math.random() * (window.innerHeight - 50);
+        noBtn.style.position = 'fixed';
+        const padding = 100;
+        const x = Math.random() * (window.innerWidth - padding * 2) + padding;
+        const y = Math.random() * (window.innerHeight - padding * 2) + padding;
         noBtn.style.left = x + 'px';
         noBtn.style.top = y + 'px';
     }
 
-    // Кнопка ДА
-    yesBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Чтобы не сработал верхний слушатель
-        bgMusic.volume = 1.0;
-        bgMusic.play(); // Принудительный старт
-        
+    noBtn.addEventListener('mouseover', moveBtn);
+    noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveBtn(); });
+
+    // Кнопка "ДА"
+    yesBtn.addEventListener('click', () => {
+        bgMusic.currentTime = 0;
+        bgMusic.play();
         document.getElementById('message').style.display = 'block';
         noBtn.style.display = 'none';
         
