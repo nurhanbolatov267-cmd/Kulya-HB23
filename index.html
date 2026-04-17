@@ -22,9 +22,10 @@
         h1 { font-size: 24px; margin: 0 0 10px 0; }
         #guest { font-size: 18px; margin-bottom: 20px; color: #ffd700; font-weight: bold; }
         
-        .main-text { font-size: 14px; line-height: 1.5; margin-bottom: 5px; color: #fff; }
-        .highlight { font-weight: bold; display: block; margin: 12px 0; font-size: 16px; color: #fff; }
-        .extra-text { font-size: 14px; line-height: 1.5; color: #fff; margin-bottom: 20px; display: block; }
+        .main-text, .extra-text { font-size: 14px; line-height: 1.5; color: #fff; }
+        .main-text { margin-bottom: 5px; }
+        .highlight { font-weight: bold; display: block; margin: 12px 0; font-size: 16px; }
+        .extra-text { margin-bottom: 20px; display: block; }
 
         .invite-photo { 
             width: 100%; max-width: 250px; border-radius: 15px; margin: 0 auto 20px; 
@@ -42,7 +43,7 @@
         #yes { background: #00c853; color: white; position: relative; z-index: 10; }
         #no { background: #ff1744; color: white; position: relative; z-index: 5; transition: all 0.3s ease-out; }
 
-        #message { display: none; margin-top: 20px; font-size: 18px; font-weight: bold; color: #00ff88; text-shadow: 0 0 10px rgba(0,255,136,0.5); }
+        #message { display: none; margin-top: 20px; font-size: 18px; font-weight: bold; color: #00ff88; }
         .confetti { position: fixed; width: 10px; height: 10px; top: -10px; animation: fall linear infinite; z-index: 1000; }
         @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
     </style>
@@ -72,7 +73,8 @@
 </div>
 
 <audio id="bgMusic" loop preload="auto" crossorigin="anonymous" playsinline>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    <source src="https://www.mboxdrive.com/birthday.mp3" type="audio/mpeg">
+    <source src="https://cdn.pixabay.com/audio/2022/11/22/audio_feb4314c45.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -84,14 +86,16 @@
     const bgMusic = document.getElementById('bgMusic');
     const mainPhoto = document.getElementById('mainPhoto');
 
-    // Предварительная загрузка
-    const initAudio = () => {
-        bgMusic.load();
-        window.removeEventListener('click', initAudio);
-        window.removeEventListener('touchstart', initAudio);
+    // Предварительная активация для обхода блокировок
+    const forceUnlock = () => {
+        bgMusic.play().then(() => {
+            bgMusic.pause();
+        }).catch(e => console.log("Ждем клика..."));
+        window.removeEventListener('mousedown', forceUnlock);
+        window.removeEventListener('touchstart', forceUnlock);
     };
-    window.addEventListener('click', initAudio);
-    window.addEventListener('touchstart', initAudio);
+    window.addEventListener('mousedown', forceUnlock);
+    window.addEventListener('touchstart', forceUnlock);
 
     function moveBtn() {
         noBtn.style.position = 'fixed';
@@ -101,17 +105,13 @@
         noBtn.style.top = Math.max(20, Math.floor(Math.random() * maxY)) + 'px';
     }
     noBtn.addEventListener('mouseover', moveBtn);
-    noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveBtn(); });
 
     yesBtn.addEventListener('click', () => {
-        // Силовой запуск
-        bgMusic.play().then(() => {
-            console.log("Победа! Музыка играет.");
-        }).catch(err => {
-            console.log("Все еще блок, пробуем еще раз.");
-            bgMusic.play();
-        });
+        // Запуск музыки
+        bgMusic.volume = 1.0;
+        bgMusic.play();
         
+        // Визуальные эффекты
         mainPhoto.style.filter = "blur(0px)"; 
         document.getElementById('message').style.display = 'block';
         noBtn.style.display = 'none';
