@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VIP Приглашение</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; color: white; text-align: center; overflow: hidden; background: #1a1a1a; }
         body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('photo.jpg') center/cover no-repeat; filter: blur(20px) brightness(0.5); z-index: -1; }
@@ -18,12 +19,13 @@
         .bottom-info { background: rgba(0, 0, 0, 0.4); padding: 15px; border-radius: 15px; font-size: 13px; line-height: 1.7; text-align: left; }
         .bottom-info a { color: #00ff88; text-decoration: underline; font-weight: bold; }
         .btn-container { height: 60px; margin-top: 25px; display: flex; justify-content: center; align-items: center; gap: 15px; position: relative; }
-        button { font-size: 16px; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; }
+        button { font-size: 16px; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease; }
         #yes { background: #00c853; color: white; position: relative; z-index: 10; }
+        #yes:hover { background: #00e676; } /* Добавляем эффект при наведении */
         #no { background: #ff1744; color: white; position: relative; z-index: 5; transition: all 0.3s ease-out; }
+        #no:hover { background: #ff5252; } /* Добавляем эффект при наведении */
         #message { display: none; margin-top: 20px; font-size: 18px; font-weight: bold; color: #00ff88; }
-        .confetti { position: fixed; width: 10px; height: 10px; top: -10px; animation: fall linear infinite; z-index: 1000; }
-        @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+        /* Удаляем старый CSS для конфетти, теперь всё делает JavaScript библиотека */
     </style>
 </head>
 <body>
@@ -37,7 +39,7 @@
         Это особенное приглашение на особенный праздник.
     </div>
     <span class="extra-text">Приглашаем тебя на незабываемый вечер ✨</span>
-    <img src="photo.jpg" class="invite-photo" id="mainPhoto">
+    <img src="photo.jpg" class="invite-photo" id="mainPhoto" alt="Куля">
     <div class="bottom-info">
         👗 Дресс-код: розово-белые тона<br>
         📍 <a href="https://2gis.kz/aktobe/geo/70030076394441340" target="_blank">Адрес: СК Строитель 4, 54А</a><br>
@@ -55,6 +57,7 @@
 </audio>
 
 <script>
+    // Получение имени гостя из URL-параметров
     const params = new URLSearchParams(window.location.search);
     document.getElementById('guest').textContent = `Привет, ${params.get('name') || 'Друг'}!`;
 
@@ -63,50 +66,79 @@
     const bgMusic = document.getElementById('bgMusic');
     const mainPhoto = document.getElementById('mainPhoto');
 
-    // Функция разблокировки звука для мобилок
-    const unlock = () => {
-        bgMusic.play().then(() => { bgMusic.pause(); }).catch(() => {});
-        window.removeEventListener('click', unlock);
-        window.removeEventListener('touchstart', unlock);
-    };
-    window.addEventListener('click', unlock);
-    window.addEventListener('touchstart', unlock);
+    // Функция для создания эффекта "взрыва" конфетти при нажатии на кнопку
+    function fireConfetti() {
+        // Настройки для взрыва конфетти
+        var count = 200; // Количество частичек
+        var defaults = {
+            origin: { y: 0.7 } // Позиция взрыва по оси Y (немного ниже центра)
+        };
 
+        // Запускаем "взрыв" из разных углов для объема
+        function fire(particleRatio, opts) {
+            confetti(Object.assign({}, defaults, opts, {
+                particleCount: Math.floor(count * particleRatio)
+            }));
+        }
+
+        // Эффект взрыва в разные стороны
+        fire(0.25, {
+            spread: 26,
+            startVelocity: 55,
+        });
+        fire(0.2, {
+            spread: 60,
+        });
+        fire(0.35, {
+            spread: 100,
+            decay: 0.91,
+            scalar: 0.8
+        });
+        fire(0.1, {
+            spread: 120,
+            startVelocity: 25,
+            decay: 0.92,
+            scalar: 1.2
+        });
+        fire(0.1, {
+            spread: 120,
+            startVelocity: 45,
+        });
+    }
+
+    // Обработчик нажатия на кнопку "Я приду"
+    yesBtn.addEventListener('click', () => {
+        // Запуск музыки с проверкой (важно для автозапуска на мобильных)
+        bgMusic.play().catch(error => {
+            console.log("Локальный файл не найден, включаю резерв...");
+            // Запасная ссылка, если локальная музыка не грузится
+            bgMusic.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3";
+            bgMusic.play();
+        });
+
+        // Визуальные эффекты на странице
+        mainPhoto.style.filter = "blur(0px)";  // Убираем блюр с фото
+        document.getElementById('message').style.display = 'block'; // Показываем сообщение
+        yesBtn.style.display = 'none'; // Скрываем кнопку "Да"
+        noBtn.style.display = 'none'; // Скрываем кнопку "Нет"
+
+        // *** ЗАПУСК ЭФФЕКТА ВЗРЫВА КОНФЕТТИ ***
+        fireConfetti();
+    });
+
+    // Функция для "убегания" кнопки "Не приду" при наведении
     function moveBtn() {
         noBtn.style.position = 'fixed';
         const maxX = window.innerWidth - noBtn.offsetWidth - 20;
         const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+        // Задаем случайные координаты
         noBtn.style.left = Math.max(20, Math.floor(Math.random() * maxX)) + 'px';
         noBtn.style.top = Math.max(20, Math.floor(Math.random() * maxY)) + 'px';
     }
+
+    // Слушаем событие наведения (для ПК) и касания (для мобильных)
     noBtn.addEventListener('mouseover', moveBtn);
-
-    yesBtn.addEventListener('click', () => {
-        // Пробуем запустить ТВОЙ music.mp3
-        bgMusic.currentTime = 0;
-        const playPromise = bgMusic.play();
-
-        if (playPromise !== undefined) {
-            playPromise.catch(error => {
-                console.log("Локальный файл не найден, включаю резерв...");
-                bgMusic.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3";
-                bgMusic.play();
-            });
-        }
-
-        mainPhoto.style.filter = "blur(0px)"; 
-        document.getElementById('message').style.display = 'block';
-        noBtn.style.display = 'none';
-
-        for (let i = 0; i < 60; i++) {
-            const c = document.createElement('div');
-            c.className = 'confetti';
-            c.style.left = Math.random() * 100 + 'vw';
-            c.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
-            c.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            document.body.appendChild(c);
-        }
-    });
+    noBtn.addEventListener('touchstart', moveBtn);
 </script>
 </body>
 </html>
