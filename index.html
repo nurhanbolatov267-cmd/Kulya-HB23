@@ -34,10 +34,10 @@
         .bottom-info a { color: #00ff88; text-decoration: underline; font-weight: bold; }
 
         .btn-container { height: 60px; margin-top: 25px; display: flex; justify-content: center; align-items: center; gap: 15px; position: relative; }
-        button { font-size: 16px; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; transition: transform 0.2s; }
+        button { font-size: 16px; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; }
         
         #yes { background: #00c853; color: white; position: relative; z-index: 10; }
-        #no { background: #ff1744; color: white; position: relative; z-index: 5; }
+        #no { background: #ff1744; color: white; position: relative; z-index: 5; transition: 0.1s; }
 
         #message { display: none; margin-top: 20px; font-size: 18px; font-weight: bold; color: #00ff88; }
         .confetti { position: fixed; width: 10px; height: 10px; top: -10px; animation: fall linear infinite; z-index: 1000; }
@@ -51,10 +51,9 @@
     <p id="guest">Загрузка...</p>
 
     <div class="main-text">
-        Дорогой друг/подруга! 📩<br>
+        Дорогой друг! 📩<br>
         <span class="highlight">Приглашаю тебя на день рождения моей любимой Кули 🎂✨</span>
-        Это особенное приглашение на особенный праздник.<br>
-        Приглашаем тебя на незабываемый вечер ✨
+        Это особенное приглашение на особенный праздник.
     </div>
 
     <img src="photo.jpg" class="invite-photo">
@@ -74,7 +73,7 @@
 </div>
 
 <audio id="bgMusic" loop preload="auto">
-    <source src="https://www.mboxdrive.com/happy-birthday.mp3" type="audio/mpeg">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -85,39 +84,35 @@
     const noBtn = document.getElementById('no');
     const bgMusic = document.getElementById('bgMusic');
 
-    // Разблокировка музыки при любом первом касании
-    const unlockAudio = () => {
+    // Предварительная "разблокировка" аудио
+    const unlock = () => {
         bgMusic.play().then(() => {
             bgMusic.pause();
-            bgMusic.currentTime = 0;
-        }).catch(e => console.log("Ждем взаимодействия"));
-        document.removeEventListener('click', unlockAudio);
-        document.removeEventListener('touchstart', unlockAudio);
+        }).catch(e => console.log("Audio unlock waiting..."));
+        window.removeEventListener('click', unlock);
+        window.removeEventListener('touchstart', unlock);
     };
-    document.addEventListener('click', unlockAudio);
-    document.addEventListener('touchstart', unlockAudio);
+    window.addEventListener('click', unlock);
+    window.addEventListener('touchstart', unlock);
 
-    // Логика убегающей кнопки (теперь она не заходит за "Я приду")
+    // Убегающая кнопка (теперь без наложений)
     function moveBtn() {
         noBtn.style.position = 'fixed';
-        const padding = 100;
-        const x = Math.random() * (window.innerWidth - padding * 2) + padding;
-        const y = Math.random() * (window.innerHeight - padding * 2) + padding;
+        const x = Math.random() * (window.innerWidth - 120);
+        const y = Math.random() * (window.innerHeight - 50);
         noBtn.style.left = x + 'px';
         noBtn.style.top = y + 'px';
     }
-
     noBtn.addEventListener('mouseover', moveBtn);
     noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveBtn(); });
 
-    // Кнопка "ДА"
+    // Кнопка ДА
     yesBtn.addEventListener('click', () => {
-        bgMusic.currentTime = 0;
-        bgMusic.play();
+        bgMusic.play().catch(err => console.error("Ошибка воспроизведения:", err));
         document.getElementById('message').style.display = 'block';
         noBtn.style.display = 'none';
         
-        for (let i = 0; i < 60; i++) {
+        for (let i = 0; i < 50; i++) {
             const c = document.createElement('div');
             c.className = 'confetti';
             c.style.left = Math.random() * 100 + 'vw';
@@ -127,6 +122,5 @@
         }
     });
 </script>
-
 </body>
 </html>
