@@ -1,180 +1,112 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Приглашение</title>
-
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: white;
-    overflow: hidden;
-    background: black;
-}
-
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: url('photo.jpg') center/cover no-repeat;
-    filter: blur(18px) brightness(0.4);
-    z-index: -1;
-}
-
-.card {
-    background: rgba(255,255,255,0.12);
-    backdrop-filter: blur(20px);
-    padding: 25px;
-    border-radius: 20px;
-    width: 85%;
-    max-width: 360px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-}
-
-h1 { margin: 0 0 10px; }
-
-button {
-    padding: 12px 20px;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    cursor: pointer;
-    margin: 5px;
-}
-
-#yes { background: #00c853; color: white; }
-#no { background: #ff1744; color: white; position: fixed; }
-
-#msg {
-    display:none;
-    margin-top:15px;
-    color:#00ff99;
-    font-weight:bold;
-}
-
-.confetti {
-    position: fixed;
-    width: 8px;
-    height: 8px;
-    top: -10px;
-    animation: fall linear forwards;
-}
-
-@keyframes fall {
-    to { transform: translateY(110vh) rotate(720deg); }
-}
-
-/* FLASH */
-.flash {
-    position: fixed;
-    inset: 0;
-    background: white;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 9999;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Приглашение</title>
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; color: white; text-align: center; overflow: hidden; background: #1a1a1a; }
+        body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('photo.jpg') center/cover no-repeat; filter: blur(20px) brightness(0.5); z-index: -1; }
+        .card { background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 30px 20px; border-radius: 25px; max-width: 350px; width: 85%; box-shadow: 0 15px 50px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); position: relative; z-index: 2; }
+        h1 { font-size: 24px; margin: 0 0 10px 0; }
+        #guest { font-size: 18px; margin-bottom: 20px; color: #ffd700; font-weight: bold; }
+        .main-text, .extra-text { font-size: 14px; line-height: 1.5; color: #fff; }
+        .main-text { margin-bottom: 5px; }
+        .highlight { font-weight: bold; display: block; margin: 12px 0; font-size: 16px; }
+        .extra-text { margin-bottom: 20px; display: block; }
+        .invite-photo { width: 100%; max-width: 250px; border-radius: 15px; margin: 0 auto 20px; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.4); filter: blur(15px); transition: filter 1.5s ease; }
+        .bottom-info { background: rgba(0, 0, 0, 0.4); padding: 15px; border-radius: 15px; font-size: 13px; line-height: 1.7; text-align: left; }
+        .bottom-info a { color: #00ff88; text-decoration: underline; font-weight: bold; }
+        .btn-container { height: 60px; margin-top: 25px; display: flex; justify-content: center; align-items: center; gap: 15px; position: relative; }
+        button { font-size: 16px; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; }
+        #yes { background: #00c853; color: white; position: relative; z-index: 10; }
+        #no { background: #ff1744; color: white; position: relative; z-index: 5; transition: all 0.3s ease-out; }
+        #message { display: none; margin-top: 20px; font-size: 18px; font-weight: bold; color: #00ff88; }
+        .confetti { position: fixed; width: 10px; height: 10px; top: -10px; animation: fall linear infinite; z-index: 1000; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+    </style>
 </head>
-
 <body>
 
-<div class="flash" id="flash"></div>
-
 <div class="card">
-    <h1>🎂 VIP ULTRA INVITE</h1>
+    <h1>🎂 VIP Приглашение</h1>
     <p id="guest">Загрузка...</p>
-
-    <button id="yes">Я приду 🔥</button>
-    <button id="no">Не приду 😈</button>
-
-    <div id="msg">🔥 ТЫ В VIP СПИСКЕ 🔥</div>
+    <div class="main-text">
+        Дорогой друг! 📩<br>
+        <span class="highlight">Приглашаю тебя на день рождения моей любимой Кули 🎂✨</span>
+        Это особенное приглашение на особенный праздник.
+    </div>
+    <span class="extra-text">Приглашаем тебя на незабываемый вечер ✨</span>
+    <img src="photo.jpg" class="invite-photo" id="mainPhoto">
+    <div class="bottom-info">
+        👗 Дресс-код: розово-белые тона<br>
+        📍 <a href="https://2gis.kz/aktobe/geo/70030076394441340" target="_blank">Адрес: СК Строитель 4, 54А</a><br>
+        📅 30 апреля | ⏰ 17:00
+    </div>
+    <div class="btn-container">
+        <button id="yes">Я приду 😍</button>
+        <button id="no">Не приду 😢</button>
+    </div>
+    <div id="message">🔥 ТЫ В СПИСКЕ ГОСТЕЙ 🔥</div>
 </div>
 
-<audio id="music" preload="auto" loop>
-<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3b3c8e2b6f.mp3?filename=party-112194.mp3">
+<audio id="bgMusic" loop preload="auto" playsinline>
+    <source src="music.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-const params = new URLSearchParams(location.search);
-document.getElementById("guest").textContent =
-"Привет, " + (params.get("name") || "Друг") + "!";
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById('guest').textContent = `Привет, ${params.get('name') || 'Друг'}!`;
 
-const yes = document.getElementById("yes");
-const no = document.getElementById("no");
-const msg = document.getElementById("msg");
-const music = document.getElementById("music");
-const flash = document.getElementById("flash");
+    const yesBtn = document.getElementById('yes');
+    const noBtn = document.getElementById('no');
+    const bgMusic = document.getElementById('bgMusic');
+    const mainPhoto = document.getElementById('mainPhoto');
 
-/* ---------- AUDIO ENGINE (BASS BOOST) ---------- */
-let audioCtx, source, gain;
+    // Функция разблокировки звука для мобилок
+    const unlock = () => {
+        bgMusic.play().then(() => { bgMusic.pause(); }).catch(() => {});
+        window.removeEventListener('click', unlock);
+        window.removeEventListener('touchstart', unlock);
+    };
+    window.addEventListener('click', unlock);
+    window.addEventListener('touchstart', unlock);
 
-function initAudio() {
-    if (audioCtx) return;
-
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    source = audioCtx.createMediaElementSource(music);
-
-    gain = audioCtx.createGain();
-    gain.gain.value = 1.6; // громкость boost
-
-    source.connect(gain);
-    gain.connect(audioCtx.destination);
-}
-
-/* ---------- FIRST CLICK UNLOCK ---------- */
-document.body.addEventListener("click", () => {
-    music.play().catch(()=>{});
-    initAudio();
-    if (audioCtx && audioCtx.state === "suspended") {
-        audioCtx.resume();
+    function moveBtn() {
+        noBtn.style.position = 'fixed';
+        const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+        const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+        noBtn.style.left = Math.max(20, Math.floor(Math.random() * maxX)) + 'px';
+        noBtn.style.top = Math.max(20, Math.floor(Math.random() * maxY)) + 'px';
     }
-}, { once:true });
+    noBtn.addEventListener('mouseover', moveBtn);
 
-/* ---------- NO BUTTON ESCAPE ---------- */
-function moveNo() {
-    const x = Math.random() * (window.innerWidth - 100);
-    const y = Math.random() * (window.innerHeight - 50);
-    no.style.left = x + "px";
-    no.style.top = y + "px";
-}
-no.addEventListener("mouseover", moveNo);
-no.addEventListener("touchstart", moveNo);
+    yesBtn.addEventListener('click', () => {
+        // Пробуем запустить ТВОЙ music.mp3
+        bgMusic.currentTime = 0;
+        const playPromise = bgMusic.play();
 
-/* ---------- YES CLICK ULTRA EFFECT ---------- */
-yes.onclick = () => {
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log("Локальный файл не найден, включаю резерв...");
+                bgMusic.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3";
+                bgMusic.play();
+            });
+        }
 
-    music.play().catch(()=>{});
+        mainPhoto.style.filter = "blur(0px)"; 
+        document.getElementById('message').style.display = 'block';
+        noBtn.style.display = 'none';
 
-    // vibration 📳
-    if (navigator.vibrate) {
-        navigator.vibrate([200,100,200,100,400]);
-    }
-
-    // flash ⚡
-    flash.style.opacity = 1;
-    setTimeout(()=> flash.style.opacity = 0, 150);
-
-    msg.style.display = "block";
-    no.style.display = "none";
-
-    // confetti 🎉
-    for (let i=0;i<80;i++){
-        const c = document.createElement("div");
-        c.className = "confetti";
-        c.style.left = Math.random()*100+"vw";
-        c.style.background = `hsl(${Math.random()*360},100%,50%)`;
-        c.style.animationDuration = (Math.random()*3+2)+"s";
-        document.body.appendChild(c);
-    }
-};
+        for (let i = 0; i < 60; i++) {
+            const c = document.createElement('div');
+            c.className = 'confetti';
+            c.style.left = Math.random() * 100 + 'vw';
+            c.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            c.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.body.appendChild(c);
+        }
+    });
 </script>
-
 </body>
 </html>
