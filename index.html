@@ -117,8 +117,11 @@
     yesBtn.addEventListener('click', () => {
         bgMusic.currentTime = 0;
         bgMusic.play().catch(() => {
-            bgMusic.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3";
-            bgMusic.play();
+            bgMusic.play().catch(() => {
+    const newAudio = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_3b3c8e2b6f.mp3?filename=party-112194.mp3");
+    newAudio.loop = true;
+    newAudio.play();
+});
         });
         
         mainPhoto.style.filter = "blur(0px)"; 
