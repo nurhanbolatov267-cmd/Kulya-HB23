@@ -29,8 +29,8 @@
         .invite-photo { 
             width: 100%; max-width: 250px; border-radius: 15px; margin: 0 auto 20px; 
             display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.4); 
-            filter: blur(15px); /* Изначально фото заблюрено */
-            transition: filter 2s ease; /* Плавное проявление */
+            filter: blur(15px); 
+            transition: filter 1.5s ease;
         }
 
         .bottom-info { background: rgba(0, 0, 0, 0.4); padding: 15px; border-radius: 15px; font-size: 13px; line-height: 1.7; text-align: left; }
@@ -72,7 +72,7 @@
 </div>
 
 <audio id="bgMusic" loop preload="auto" crossorigin="anonymous" playsinline>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -84,14 +84,14 @@
     const bgMusic = document.getElementById('bgMusic');
     const mainPhoto = document.getElementById('mainPhoto');
 
-    // Разблокировка аудио движком браузера при первом клике/касании
-    const unlockAudio = () => {
-        bgMusic.play().then(() => { bgMusic.pause(); }).catch(() => {});
-        window.removeEventListener('touchstart', unlockAudio);
-        window.removeEventListener('click', unlockAudio);
+    // Предварительная загрузка
+    const initAudio = () => {
+        bgMusic.load();
+        window.removeEventListener('click', initAudio);
+        window.removeEventListener('touchstart', initAudio);
     };
-    window.addEventListener('touchstart', unlockAudio);
-    window.addEventListener('click', unlockAudio);
+    window.addEventListener('click', initAudio);
+    window.addEventListener('touchstart', initAudio);
 
     function moveBtn() {
         noBtn.style.position = 'fixed';
@@ -104,13 +104,18 @@
     noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveBtn(); });
 
     yesBtn.addEventListener('click', () => {
-        bgMusic.currentTime = 0;
-        bgMusic.play().catch(e => console.log("Ошибка звука:", e));
+        // Силовой запуск
+        bgMusic.play().then(() => {
+            console.log("Победа! Музыка играет.");
+        }).catch(err => {
+            console.log("Все еще блок, пробуем еще раз.");
+            bgMusic.play();
+        });
         
-        mainPhoto.style.filter = "blur(0px)"; // Убираем блюр
-        
+        mainPhoto.style.filter = "blur(0px)"; 
         document.getElementById('message').style.display = 'block';
         noBtn.style.display = 'none';
+        
         for (let i = 0; i < 60; i++) {
             const c = document.createElement('div');
             c.className = 'confetti';
