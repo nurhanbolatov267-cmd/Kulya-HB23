@@ -8,7 +8,6 @@
         body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; color: white; text-align: center; overflow: hidden; background: #1a1a1a; }
         body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('photo.jpg') center/cover no-repeat; filter: blur(20px) brightness(0.5); z-index: -1; }
         
-        /* Прозрачная рамка (карточка), как на скриншоте */
         .card { 
             background: rgba(255, 255, 255, 0.12); 
             backdrop-filter: blur(20px); 
@@ -26,12 +25,11 @@
         h1 { font-size: 24px; margin: 0 0 10px 0; }
         #guest { font-size: 18px; margin-bottom: 20px; color: #ffd700; font-weight: bold; }
         
-        /* Основной текст */
-        .main-text { font-size: 14px; line-height: 1.5; margin-bottom: 15px; color: #fff; }
+        .main-text { font-size: 14px; line-height: 1.5; margin-bottom: 5px; color: #fff; }
         .highlight { font-weight: bold; display: block; margin: 12px 0; font-size: 16px; color: #fff; }
         
-        /* Текст, который был забыт: Приглашаем тебя на незабываемый вечер ✨ */
-        .extra-text { font-size: 13px; color: #ccc; margin-bottom: 20px; display: block; }
+        /* Теперь этот текст такого же размера, как основной (14px) */
+        .extra-text { font-size: 14px; line-height: 1.5; color: #fff; margin-bottom: 20px; display: block; }
 
         .invite-photo { width: 100%; max-width: 250px; border-radius: 15px; margin: 0 auto 20px; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.4); }
 
@@ -42,14 +40,12 @@
         button { font-size: 16px; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         
         #yes { background: #00c853; color: white; position: relative; z-index: 10; }
-        
-        /* Кнопка "Нет" с плавным движением */
         #no { 
             background: #ff1744; 
             color: white; 
             position: relative; 
             z-index: 5; 
-            transition: all 0.3s ease-out; /* Плавное движение */
+            transition: all 0.3s ease-out; 
         }
 
         #message { display: none; margin-top: 20px; font-size: 18px; font-weight: bold; color: #00ff88; text-shadow: 0 0 10px rgba(0,255,136,0.5); }
@@ -99,47 +95,30 @@
     const noBtn = document.getElementById('no');
     const bgMusic = document.getElementById('bgMusic');
 
-    // Разблокировка аудио при первом касании экрана
     const unlock = () => {
-        bgMusic.play().then(() => {
-            bgMusic.pause();
-        }).catch(() => {});
+        bgMusic.play().then(() => { bgMusic.pause(); }).catch(() => {});
         window.removeEventListener('touchstart', unlock);
         window.removeEventListener('click', unlock);
     };
     window.addEventListener('touchstart', unlock);
     window.addEventListener('click', unlock);
 
-    // Функция плавного перемещения кнопки "Нет" (не вылетая за границы телефона)
     function moveBtn() {
         noBtn.style.position = 'fixed';
-        const btnWidth = noBtn.offsetWidth;
-        const btnHeight = noBtn.offsetHeight;
-        
-        const maxX = window.innerWidth - btnWidth - 20;
-        const maxY = window.innerHeight - btnHeight - 20;
-        
-        const randomX = Math.max(20, Math.floor(Math.random() * maxX));
-        const randomY = Math.max(20, Math.floor(Math.random() * maxY));
-        
-        noBtn.style.left = randomX + 'px';
-        noBtn.style.top = randomY + 'px';
+        const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+        const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+        noBtn.style.left = Math.max(20, Math.floor(Math.random() * maxX)) + 'px';
+        noBtn.style.top = Math.max(20, Math.floor(Math.random() * maxY)) + 'px';
     }
 
     noBtn.addEventListener('mouseover', moveBtn);
-    noBtn.addEventListener('touchstart', (e) => { 
-        e.preventDefault(); 
-        moveBtn(); 
-    });
+    noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveBtn(); });
 
     yesBtn.addEventListener('click', () => {
-        // Принудительный старт при клике на "Да"
         bgMusic.currentTime = 0;
         bgMusic.play();
-
         document.getElementById('message').style.display = 'block';
         noBtn.style.display = 'none';
-        
         for (let i = 0; i < 60; i++) {
             const c = document.createElement('div');
             c.className = 'confetti';
@@ -150,6 +129,5 @@
         }
     });
 </script>
-
 </body>
 </html>
