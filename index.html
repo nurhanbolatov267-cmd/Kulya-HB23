@@ -15,7 +15,7 @@
         #yes { background: #00c853; color: white; }
         #no { background: #ff1744; color: white; position: absolute; }
         #message { display: none; margin-top: 15px; font-size: 18px; font-weight: bold; color: #00ff88; }
-        .confetti { position: fixed; width: 8px; height: 8px; top: -10px; animation: fall linear infinite; }
+        .confetti { position: fixed; width: 8px; height: 8px; top: -10px; animation: fall linear infinite; z-index: 100; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
 </head>
@@ -27,7 +27,7 @@
     <p>Дорогой друг! 💌<br><br><span class="highlight">Приглашаю тебя на день рождения моей любимой Кули 🎂✨</span></p>
     <img src="photo.jpg" class="invite-photo">
     <div class="bottom-info">
-        <p>👗 Дресс-код: : нежные розово-белые тона</p>
+        <p>👗 Дресс-код: розово-белый</p>
         <p>📍 <a href="https://2gis.kz/aktobe/geo/70030076394441340" target="_blank" style="color:white;">СК Строитель 4, 54А</a></p>
         <p>📅 30 апреля | ⏰ 17:00</p>
     </div>
@@ -39,7 +39,7 @@
 </div>
 
 <audio id="bgMusic" loop preload="auto">
-<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_27339733d2.mp3" type="audio/mpeg">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -50,16 +50,19 @@
     const noBtn = document.getElementById('no');
     const bgMusic = document.getElementById('bgMusic');
 
-    // Функция запуска музыки
+    // Функция запуска
     function startMusic() {
-        bgMusic.play().catch(() => console.log("Ждем взаимодействия..."));
+        bgMusic.play();
     }
 
-    // Слушаем клики для разблокировки звука
-    document.addEventListener('click', startMusic, { once: true });
-    document.addEventListener('touchstart', startMusic, { once: true });
+    // РАЗБЛОКИРОВКА ЗВУКА (очень важно)
+    window.addEventListener('touchstart', function() {
+        bgMusic.play();
+        bgMusic.pause();
+    }, { once: true });
 
-    // Убегающая кнопка
+    document.addEventListener('click', startMusic, { once: true });
+
     noBtn.addEventListener('mouseover', moveBtn);
     noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveBtn(); });
 
@@ -68,9 +71,9 @@
         noBtn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
     }
 
-    // Кнопка ДА
     yesBtn.addEventListener('click', () => {
-        bgMusic.play(); // Жесткий запуск
+        bgMusic.volume = 1.0;
+        bgMusic.play(); 
         document.getElementById('message').style.display = 'block';
         noBtn.style.display = 'none';
         for (let i = 0; i < 50; i++) {
