@@ -12,14 +12,11 @@
             background: rgba(255, 255, 255, 0.12); 
             backdrop-filter: blur(20px); 
             -webkit-backdrop-filter: blur(20px); 
-            padding: 30px 20px; 
-            border-radius: 25px; 
-            max-width: 350px; 
-            width: 85%; 
+            padding: 30px 20px; border-radius: 25px; 
+            max-width: 350px; width: 85%; 
             box-shadow: 0 15px 50px rgba(0,0,0,0.6); 
             border: 1px solid rgba(255,255,255,0.2);
-            position: relative;
-            z-index: 2;
+            position: relative; z-index: 2;
         }
 
         h1 { font-size: 24px; margin: 0 0 10px 0; }
@@ -29,33 +26,21 @@
         .highlight { font-weight: bold; display: block; margin: 12px 0; font-size: 16px; color: #fff; }
         .extra-text { font-size: 14px; line-height: 1.5; color: #fff; margin-bottom: 20px; display: block; }
 
-        /* Настройки фото с блюром */
         .invite-photo { 
-            width: 100%; 
-            max-width: 250px; 
-            border-radius: 15px; 
-            margin: 0 auto 20px; 
-            display: block; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            border: 2px solid rgba(255,255,255,0.4); 
-            filter: blur(15px); /* Изначальный блюр */
-            transition: filter 1.5s ease; /* Плавное исчезновение блюра */
+            width: 100%; max-width: 250px; border-radius: 15px; margin: 0 auto 20px; 
+            display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.4); 
+            filter: blur(15px); /* Изначально фото заблюрено */
+            transition: filter 2s ease; /* Плавное проявление */
         }
 
         .bottom-info { background: rgba(0, 0, 0, 0.4); padding: 15px; border-radius: 15px; font-size: 13px; line-height: 1.7; text-align: left; }
         .bottom-info a { color: #00ff88; text-decoration: underline; font-weight: bold; }
 
         .btn-container { height: 60px; margin-top: 25px; display: flex; justify-content: center; align-items: center; gap: 15px; position: relative; }
-        button { font-size: 16px; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        button { font-size: 16px; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; }
         
         #yes { background: #00c853; color: white; position: relative; z-index: 10; }
-        #no { 
-            background: #ff1744; 
-            color: white; 
-            position: relative; 
-            z-index: 5; 
-            transition: all 0.3s ease-out; 
-        }
+        #no { background: #ff1744; color: white; position: relative; z-index: 5; transition: all 0.3s ease-out; }
 
         #message { display: none; margin-top: 20px; font-size: 18px; font-weight: bold; color: #00ff88; text-shadow: 0 0 10px rgba(0,255,136,0.5); }
         .confetti { position: fixed; width: 10px; height: 10px; top: -10px; animation: fall linear infinite; z-index: 1000; }
@@ -67,28 +52,22 @@
 <div class="card">
     <h1>🎂 VIP Приглашение</h1>
     <p id="guest">Загрузка...</p>
-
     <div class="main-text">
         Дорогой друг! 📩<br>
         <span class="highlight">Приглашаю тебя на день рождения моей любимой Кули 🎂✨</span>
         Это особенное приглашение на особенный праздник.
     </div>
-    
     <span class="extra-text">Приглашаем тебя на незабываемый вечер ✨</span>
-
     <img src="photo.jpg" class="invite-photo" id="mainPhoto">
-
     <div class="bottom-info">
         👗 Дресс-код: розово-белые тона<br>
         📍 <a href="https://2gis.kz/aktobe/geo/70030076394441340" target="_blank">Адрес: СК Строитель 4, 54А</a><br>
         📅 30 апреля | ⏰ 17:00
     </div>
-
     <div class="btn-container">
         <button id="yes">Я приду 😍</button>
         <button id="no">Не приду 😢</button>
     </div>
-
     <div id="message">🔥 ТЫ В СПИСКЕ ГОСТЕЙ 🔥</div>
 </div>
 
@@ -105,13 +84,14 @@
     const bgMusic = document.getElementById('bgMusic');
     const mainPhoto = document.getElementById('mainPhoto');
 
-    const unlock = () => {
+    // Разблокировка аудио движком браузера при первом клике/касании
+    const unlockAudio = () => {
         bgMusic.play().then(() => { bgMusic.pause(); }).catch(() => {});
-        window.removeEventListener('touchstart', unlock);
-        window.removeEventListener('click', unlock);
+        window.removeEventListener('touchstart', unlockAudio);
+        window.removeEventListener('click', unlockAudio);
     };
-    window.addEventListener('touchstart', unlock);
-    window.addEventListener('click', unlock);
+    window.addEventListener('touchstart', unlockAudio);
+    window.addEventListener('click', unlockAudio);
 
     function moveBtn() {
         noBtn.style.position = 'fixed';
@@ -120,16 +100,14 @@
         noBtn.style.left = Math.max(20, Math.floor(Math.random() * maxX)) + 'px';
         noBtn.style.top = Math.max(20, Math.floor(Math.random() * maxY)) + 'px';
     }
-
     noBtn.addEventListener('mouseover', moveBtn);
     noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveBtn(); });
 
     yesBtn.addEventListener('click', () => {
         bgMusic.currentTime = 0;
-        bgMusic.play();
+        bgMusic.play().catch(e => console.log("Ошибка звука:", e));
         
-        // Убираем блюр у фото
-        mainPhoto.style.filter = "blur(0px)";
+        mainPhoto.style.filter = "blur(0px)"; // Убираем блюр
         
         document.getElementById('message').style.display = 'block';
         noBtn.style.display = 'none';
