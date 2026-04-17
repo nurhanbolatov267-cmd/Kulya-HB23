@@ -8,6 +8,7 @@
         body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; color: white; text-align: center; overflow: hidden; background: #1a1a1a; }
         body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('photo.jpg') center/cover no-repeat; filter: blur(20px) brightness(0.5); z-index: -1; }
         
+        /* Прозрачная рамка (карточка), как на скриншоте */
         .card { 
             background: rgba(255, 255, 255, 0.12); 
             backdrop-filter: blur(20px); 
@@ -24,9 +25,16 @@
 
         h1 { font-size: 24px; margin: 0 0 10px 0; }
         #guest { font-size: 18px; margin-bottom: 20px; color: #ffd700; font-weight: bold; }
-        .main-text { font-size: 14px; line-height: 1.5; margin-bottom: 20px; }
+        
+        /* Основной текст */
+        .main-text { font-size: 14px; line-height: 1.5; margin-bottom: 15px; color: #fff; }
         .highlight { font-weight: bold; display: block; margin: 12px 0; font-size: 16px; color: #fff; }
+        
+        /* Текст, который был забыт: Приглашаем тебя на незабываемый вечер ✨ */
+        .extra-text { font-size: 13px; color: #ccc; margin-bottom: 20px; display: block; }
+
         .invite-photo { width: 100%; max-width: 250px; border-radius: 15px; margin: 0 auto 20px; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.4); }
+
         .bottom-info { background: rgba(0, 0, 0, 0.4); padding: 15px; border-radius: 15px; font-size: 13px; line-height: 1.7; text-align: left; }
         .bottom-info a { color: #00ff88; text-decoration: underline; font-weight: bold; }
 
@@ -34,6 +42,8 @@
         button { font-size: 16px; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         
         #yes { background: #00c853; color: white; position: relative; z-index: 10; }
+        
+        /* Кнопка "Нет" с плавным движением */
         #no { 
             background: #ff1744; 
             color: white; 
@@ -58,6 +68,8 @@
         <span class="highlight">Приглашаю тебя на день рождения моей любимой Кули 🎂✨</span>
         Это особенное приглашение на особенный праздник.
     </div>
+    
+    <span class="extra-text">Приглашаем тебя на незабываемый вечер ✨</span>
 
     <img src="photo.jpg" class="invite-photo">
 
@@ -76,7 +88,7 @@
 </div>
 
 <audio id="bgMusic" loop preload="auto" crossorigin="anonymous" playsinline>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -91,21 +103,19 @@
     const unlock = () => {
         bgMusic.play().then(() => {
             bgMusic.pause();
-            console.log("Аудио готово к запуску");
-        }).catch(e => console.log("Блокировка проигрывания"));
+        }).catch(() => {});
         window.removeEventListener('touchstart', unlock);
         window.removeEventListener('click', unlock);
     };
     window.addEventListener('touchstart', unlock);
     window.addEventListener('click', unlock);
 
-    // Функция плавного и безопасного перемещения кнопки "Нет"
+    // Функция плавного перемещения кнопки "Нет" (не вылетая за границы телефона)
     function moveBtn() {
         noBtn.style.position = 'fixed';
         const btnWidth = noBtn.offsetWidth;
         const btnHeight = noBtn.offsetHeight;
         
-        // Кнопка остается в пределах видимости экрана смартфона
         const maxX = window.innerWidth - btnWidth - 20;
         const maxY = window.innerHeight - btnHeight - 20;
         
@@ -125,7 +135,7 @@
     yesBtn.addEventListener('click', () => {
         // Принудительный старт при клике на "Да"
         bgMusic.currentTime = 0;
-        bgMusic.play().catch(() => alert("Пожалуйста, включите звук!"));
+        bgMusic.play();
 
         document.getElementById('message').style.display = 'block';
         noBtn.style.display = 'none';
